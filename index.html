@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق القيادة الاستراتيجية | معسكر تايلند (النسخة السحابية)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #030308;
+            --text-main: #F8F8FF;
+            --text-muted: #888899;
+            --glass-bg: rgba(15, 15, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            
+            --clr-1: #FFD700; --clr-2: #39FF14; --clr-3: #FF3131;
+            --clr-4: #00FFFF; --clr-5: #BD00FF; --clr-6: #FF5E00;
+            --clr-7: #00FF95; --clr-8: #FF007F; --clr-9: #EDEDED;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif; background-color: var(--bg-base); color: var(--text-main);
+            margin: 0; padding: 20px; min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 50%, rgba(40, 40, 60, 0.2), transparent 80%);
+            display: flex; flex-direction: column;
+        }
+
+        .header-bar { text-align: center; margin-bottom: 40px; }
+        .header-bar h1 { margin: 0; font-size: 2.2rem; font-weight: 900; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-bar p { color: var(--text-muted); margin: 5px 0 15px 0; }
+        
+        .cloud-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(57, 255, 20, 0.1); color: var(--clr-2); border: 1px solid var(--clr-2); }
+
+        .view { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; width: 100%; }
+        .nav-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .nav-card:hover { transform: translateY(-5px); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 15px; transition: 0.3s; }
+        .card-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 5px; }
+        .card-hint { font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; }
+
+        .detail-container { max-width: 900px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: calc(100vh - 150px); }
+        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 1rem; margin-bottom: 20px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .detail-header { display: flex; align-items: center; gap: 15px; font-size: 2rem; font-weight: 900; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        
+        .detail-tasks { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px 20px; margin-bottom: 25px; border-right: 4px solid; }
+        .detail-tasks h4 { margin: 0 0 10px 0; color: #fff; opacity: 0.8; font-size: 0.9rem; }
+        .task-list { margin: 0; padding: 0; list-style: none; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .task-list li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+
+        .notes-wrapper { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; margin-bottom: 20px; }
+        .notes-wrapper::-webkit-scrollbar { width: 5px; }
+        .notes-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        .note-card { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.02); font-size: 1rem; transition: 0.2s; border-right: 3px solid transparent; }
+        .note-card:hover { background: rgba(255,255,255,0.05); }
+        .note-text { flex: 1; color: #eee; }
+        .btn-del { background: rgba(255,50,50,0.1); color: #ff4444; border: 1px solid transparent; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-del:hover { background: #ff4444; color: #fff; }
+
+        .input-area { display: flex; gap: 10px; }
+        .input-area input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: #fff; padding: 15px 20px; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; }
+        .input-area button { border: none; padding: 0 30px; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Cairo'; font-size: 1.1rem; color: #000; }
+        
+        .loading-text { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <h1>إمبراطورية المتداولين | مركز القيادة الميدانية</h1>
+        <p>يا قائدي، انقر على أي قسم للدخول لغرفة العمليات الخاصة به.</p>
+        <div class="cloud-status" id="cloud-indicator"><i class="fas fa-cloud"></i> متصل بالسحابة</div>
+    </div>
+
+    <div id="dashboard-view" class="view active">
+        <div class="cards-grid" id="cards-container"></div>
+    </div>
+
+    <div id="detail-view" class="view">
+        <div class="detail-container">
+            <button class="btn-back" onclick="closeSection()"><i class="fas fa-arrow-right"></i> العودة للوحة القيادة</button>
+            <div class="detail-glass-panel" id="detail-panel">
+                <div class="detail-header" id="sec-header">
+                    <i id="sec-icon"></i> <span id="sec-title">عنوان القسم</span>
+                </div>
+                <div class="detail-tasks" id="sec-tasks-box">
+                    <h4><i class="fas fa-bullseye"></i> المهام الاستراتيجية:</h4>
+                    <ul class="task-list" id="sec-tasks"></ul>
+                </div>
+                <div class="notes-wrapper" id="notes-list">
+                    <div class="loading-text"><i class="fas fa-spinner fa-spin"></i> جاري جلب البيانات السحابية...</div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="note-input" placeholder="اكتب ملاحظة، مهمة، أو توجيه جديد هنا...">
+                    <button id="add-btn" onclick="addNote()"><i class="fas fa-plus"></i> إضافة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* === التوجيه الاستراتيجي للربط السحابي (مهم جداً يا قائدي) ===
+         لكي يعمل هذا الملف عبر جميع الأجهزة (يشارك نفس الداتا)، يجب أن نستخدم قاعدة بيانات.
+         وفرت لك هنا الهيكل للربط مع JSONBin.io (خدمة مجانية تحفظ البيانات برابط).
+         في الوقت الحالي، الكود سيستمر باستخدام الـ LocalStorage (الذاكرة المحلية) حتى تقوم 
+         بإنشاء حساب مجاني في JSONBin ووضع مفاتيحك بالأسفل. 
+        */
+
+        const CLOUD_API_URL = ""; // ضع هنا رابط الـ BIN الخاص بك (مثال: https://api.jsonbin.io/v3/b/123456)
+        const CLOUD_API_KEY = ""; // ضع هنا مفتاح الـ Master Key الخاص بك
+
+        let allNotesData = {}; // قاعدة البيانات في الذاكرة
+
+        const sectionsData = {
+            1: { title: "المالية والمبيعات", icon: "fa-wallet", color: "var(--clr-1)", tasks: ["تحصيل المبيعات", "إدارة السيولة"] },
+            2: { title: "البرنامج التدريبي", icon: "fa-graduation-cap", color: "var(--clr-2)", tasks: ["تجهيز السيت أب", "جدول المحاضرات"] },
+            3: { title: "التصوير والإنتاج", icon: "fa-video", color: "var(--clr-3)", tasks: ["توثيق الفلوقات", "المونتاج السريع"] },
+            4: { title: "العمليات والحجوزات", icon: "fa-map-marked-alt", color: "var(--clr-4)", tasks: ["تأكيد الحجوزات", "النقل الداخلي"] },
+            5: { title: "التسويق والرعايات", icon: "fa-ad", color: "var(--clr-5)", tasks: ["حملات الـ FOMO", "رعايات الشركات"] },
+            6: { title: "البرنامج الترفيهي", icon: "fa-umbrella-beach", color: "var(--clr-6)", tasks: ["الرحلات السياحية", "الفعاليات الليلية"] },
+            7: { title: "المطبوعات والهوية", icon: "fa-print", color: "var(--clr-7)", tasks: ["تجهيز الملابس", "البروشورات"] },
+            8: { title: "المتطوعون", icon: "fa-user-friends", color: "var(--clr-8)", tasks: ["الاستقبال والدعم", "إرشاد المتداولين"] },
+            9: { title: "المنسق الميداني", icon: "fa-user-shield", color: "var(--clr-9)", tasks: ["القيادة الميدانية", "خطة الطوارئ"] }
+        };
+
+        let currentActiveSection = null;
+
+        // تهيئة النظام
+        function initSystem() {
+            const container = document.getElementById('cards-container');
+            for (let id in sectionsData) {
+                const data = sectionsData[id];
+                const card = document.createElement('div');
+                card.className = 'nav-card';
+                card.style.borderTop = `4px solid ${data.color}`;
+                card.innerHTML = `<div class="card-icon" style="color: ${data.color};"><i class="fas ${data.icon}"></i></div><div class="card-title">${data.title}</div>`;
+                card.onclick = () => openSection(id);
+                container.appendChild(card);
+            }
+            loadDataFromCloud();
+        }
+
+        // جلب البيانات (سحابياً أو محلياً)
+        async function loadDataFromCloud() {
+            if (CLOUD_API_URL && CLOUD_API_KEY) {
+                try {
+                    let response = await fetch(CLOUD_API_URL, { headers: { 'X-Master-Key': CLOUD_API_KEY } });
+                    let result = await response.json();
+                    allNotesData = result.record || {};
+                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-cloud"></i> متصل بالسحابة بنجاح';
+                } catch (error) {
+                    console.error("خطأ في السحابة:", error);
+                    loadLocalData();
+                }
+            } else {
+                loadLocalData();
+                document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-hdd"></i> وضع الحفظ المحلي (انتظر إعداد السحابة)';
+                document.getElementById('cloud-indicator').style.color = "var(--clr-3)";
+                document.getElementById('cloud-indicator').style.borderColor = "var(--clr-3)";
+            }
+        }
+
+        function loadLocalData() {
+            allNotesData = JSON.parse(localStorage.getItem('te_all_notes')) || {};
+        }
+
+        // حفظ البيانات (سحابياً أو محلياً)
+        async function saveDataToCloud() {
+            if (CLOUD_API_URL && CLOUD_API_KEY) {
+                try {
+                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-sync fa-spin"></i> جاري المزامنة...';
+                    await fetch(CLOUD_API_URL, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
+                        body: JSON.stringify(allNotesData)
+                    });
+                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-check-circle"></i> تم الحفظ للجميع';
+                } catch (error) {
+                    console.error("فشل الحفظ السحابي", error);
+                }
+            } else {
+                localStorage.setItem('te_all_notes', JSON.stringify(allNotesData));
+            }
+        }
+
+        function openSection(id) {
+            currentActiveSection = id;
+            const data = sectionsData[id];
+            document.getElementById('dashboard-view').classList.remove('active');
+            document.getElementById('detail-view').classList.add('active');
+            
+            document.getElementById('sec-icon').className = `fas ${data.icon}`;
+            document.getElementById('sec-title').innerText = data.title;
+            document.getElementById('sec-header').style.color = data.color;
+            document.getElementById('sec-tasks-box').style.borderColor = data.color;
+            document.getElementById('sec-tasks').innerHTML = data.tasks.map(t => `<li><i class="fas fa-circle" style="color:${data.color}"></i> ${t}</li>`).join('');
+            document.getElementById('add-btn').style.backgroundColor = data.color;
+
+            renderNotes();
+        }
+
+        function closeSection() {
+            currentActiveSection = null;
+            document.getElementById('detail-view').classList.remove('active');
+            document.getElementById('dashboard-view').classList.add('active');
+        }
+
+        function renderNotes() {
+            const list = document.getElementById('notes-list');
+            let sectionNotes = allNotesData[currentActiveSection] || [];
+            
+            if(sectionNotes.length === 0) {
+                list.innerHTML = `<div class="loading-text">لا توجد ملاحظات. أضف توجيهك وسيحفظ تلقائياً عبر الأجهزة.</div>`;
+                return;
+            }
+
+            list.innerHTML = "";
+            sectionNotes.forEach((note, index) => {
+                const div = document.createElement("div");
+                div.className = "note-card";
+                div.style.borderRightColor = sectionsData[currentActiveSection].color;
+                div.innerHTML = `<div class="note-text">${note}</div><button class="btn-del" onclick="deleteNote(${index})"><i class="fas fa-trash-alt"></i></button>`;
+                list.appendChild(div);
+            });
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function addNote() {
+            const input = document.getElementById('note-input');
+            const text = input.value.trim();
+            if (text && currentActiveSection) {
+                if (!allNotesData[currentActiveSection]) allNotesData[currentActiveSection] = [];
+                allNotesData[currentActiveSection].push(text);
+                renderNotes();
+                saveDataToCloud(); // يقوم برفعها للسحابة فوراً
+                input.value = "";
+            }
+        }
+
+        function deleteNote(index) {
+            if(currentActiveSection && allNotesData[currentActiveSection]) {
+                allNotesData[currentActiveSection].splice(index, 1);
+                renderNotes();
+                saveDataToCloud(); // يقوم بتحديث السحابة فوراً
+            }
+        }
+
+        document.getElementById('note-input').addEventListener("keypress", (e) => { if(e.key === "Enter") addNote(); });
+        
+        window.onload = initSystem;
+    </script>
+</body>
+</html>

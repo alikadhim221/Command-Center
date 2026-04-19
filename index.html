@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق القيادة الاستراتيجية | معسكر تايلند (النسخة السحابية)</title>
+    <title>إمبراطورية المتداولين | وحدة التحكم الموحدة</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +15,6 @@
             --text-muted: #888899;
             --glass-bg: rgba(15, 15, 25, 0.7);
             --glass-border: rgba(255, 255, 255, 0.08);
-            
             --clr-1: #FFD700; --clr-2: #39FF14; --clr-3: #FF3131;
             --clr-4: #00FFFF; --clr-5: #BD00FF; --clr-6: #FF5E00;
             --clr-7: #00FF95; --clr-8: #FF007F; --clr-9: #EDEDED;
@@ -28,231 +27,216 @@
             display: flex; flex-direction: column;
         }
 
-        .header-bar { text-align: center; margin-bottom: 40px; }
-        .header-bar h1 { margin: 0; font-size: 2.2rem; font-weight: 900; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-bar p { color: var(--text-muted); margin: 5px 0 15px 0; }
-        
-        .cloud-status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(57, 255, 20, 0.1); color: var(--clr-2); border: 1px solid var(--clr-2); }
-
         .view { display: none; animation: fadeIn 0.4s ease-in-out; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; width: 100%; }
-        .nav-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
-        .nav-card:hover { transform: translateY(-5px); }
-        .card-icon { font-size: 2.5rem; margin-bottom: 15px; transition: 0.3s; }
-        .card-title { font-size: 1.3rem; font-weight: 900; margin-bottom: 5px; }
-        .card-hint { font-size: 0.85rem; color: var(--text-muted); opacity: 0.7; }
+        /* لوحة الأقسام الرئيسية */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; width: 100%; }
+        .nav-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .nav-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .card-icon { font-size: 3rem; margin-bottom: 15px; }
+        .card-title { font-size: 1.5rem; font-weight: 900; }
 
-        .detail-container { max-width: 900px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: calc(100vh - 150px); }
-        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Cairo'; font-size: 1rem; margin-bottom: 20px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        /* حاوية التفاصيل العملاقة */
+        .detail-container { max-width: 98%; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
+        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; margin-bottom: 15px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-back:hover { background: rgba(255,255,255,0.1); }
-        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .detail-header { display: flex; align-items: center; gap: 15px; font-size: 2rem; font-weight: 900; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
         
-        .detail-tasks { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px 20px; margin-bottom: 25px; border-right: 4px solid; }
-        .detail-tasks h4 { margin: 0 0 10px 0; color: #fff; opacity: 0.8; font-size: 0.9rem; }
-        .task-list { margin: 0; padding: 0; list-style: none; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
-        .task-list li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
-
-        .notes-wrapper { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; margin-bottom: 20px; }
-        .notes-wrapper::-webkit-scrollbar { width: 5px; }
-        .notes-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-
-        .note-card { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.02); font-size: 1rem; transition: 0.2s; border-right: 3px solid transparent; }
-        .note-card:hover { background: rgba(255,255,255,0.05); }
-        .note-text { flex: 1; color: #eee; }
-        .btn-del { background: rgba(255,50,50,0.1); color: #ff4444; border: 1px solid transparent; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-        .btn-del:hover { background: #ff4444; color: #fff; }
-
-        .input-area { display: flex; gap: 10px; }
-        .input-area input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: #fff; padding: 15px 20px; border-radius: 12px; font-family: 'Cairo'; font-size: 1rem; outline: none; transition: 0.3s; }
-        .input-area button { border: none; padding: 0 30px; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Cairo'; font-size: 1.1rem; color: #000; }
+        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 35px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.6); overflow: hidden; }
         
-        .loading-text { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 20px; }
+        .detail-header { display: flex; align-items: center; gap: 20px; font-size: 2.5rem; font-weight: 900; margin-bottom: 25px; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+
+        /* القائمة الموحدة بتصميم العمودين (Dual-Column Grid) */
+        .master-list-wrapper { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding-right: 10px; 
+            margin-bottom: 25px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* تم التقسيم إلى عمودين */
+            gap: 15px; 
+            align-content: start; /* يمنع تمدد العناصر للأسفل إذا كان العدد قليلاً */
+        }
+        .master-list-wrapper::-webkit-scrollbar { width: 6px; }
+        .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        /* لضمان التجاوب إذا تم فتحها من شاشة صغيرة، تعود لعمود واحد */
+        @media (max-width: 900px) {
+            .master-list-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.04); padding: 18px 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.03); transition: 0.3s; border-right: 5px solid transparent; height: fit-content; }
+        .item-row:hover { background: rgba(255,255,255,0.07); transform: translateY(-3px); }
+        
+        /* حالة الإنجاز (Toggled) */
+        .item-row.is-done { opacity: 0.35; filter: grayscale(100%); }
+        .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); }
+
+        .item-main { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
+        .item-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--clr-2); margin-top: 3px; }
+        .item-text { color: #fff; font-size: 1.1rem; line-height: 1.6; font-weight: 400; word-break: break-word; }
+        
+        .btn-delete-row { background: rgba(255,50,50,0.1); color: #ff4444; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; height: fit-content; }
+        .btn-delete-row:hover { background: #ff3131; color: #fff; }
+
+        /* منطقة الإدخال في الأسفل */
+        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 18px; border: 1px solid var(--glass-border); }
+        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.2rem; outline: none; }
+        .input-footer button { background: #fff; color: #000; border: none; padding: 12px 45px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .input-footer button:hover { transform: scale(1.03); background: var(--clr-2); }
+
     </style>
 </head>
 <body>
 
- 
-
     <div id="dashboard-view" class="view active">
-        <div class="cards-grid" id="cards-container"></div>
+        <div class="cards-grid" id="sections-grid"></div>
     </div>
 
     <div id="detail-view" class="view">
         <div class="detail-container">
-            <button class="btn-back" onclick="closeSection()"><i class="fas fa-arrow-right"></i> العودة للوحة القيادة</button>
-            <div class="detail-glass-panel" id="detail-panel">
-                <div class="detail-header" id="sec-header">
-                    <i id="sec-icon"></i> <span id="sec-title">عنوان القسم</span>
+            <button class="btn-back" onclick="exitSection()"><i class="fas fa-chevron-right"></i> العودة للوحة القيادة</button>
+            <div class="detail-glass-panel">
+                
+                <div class="detail-header" id="header-el">
+                    <i id="header-icon"></i> <span id="header-title"></span>
                 </div>
-                <div class="detail-tasks" id="sec-tasks-box">
-                    <h4><i class="fas fa-bullseye"></i> المهام الاستراتيجية:</h4>
-                    <ul class="task-list" id="sec-tasks"></ul>
+
+                <div class="master-list-wrapper" id="master-list">
+                    </div>
+
+                <div class="input-footer">
+                    <input type="text" id="master-input" placeholder="أضف مهمة، ملاحظة، أو أمر استراتيجي جديد هنا...">
+                    <button onclick="addNewItem()"><i class="fas fa-plus-circle"></i> إضافة</button>
                 </div>
-                <div class="notes-wrapper" id="notes-list">
-                    <div class="loading-text"><i class="fas fa-spinner fa-spin"></i> جاري جلب البيانات السحابية...</div>
-                </div>
-                <div class="input-area">
-                    <input type="text" id="note-input" placeholder="اكتب ملاحظة، مهمة، أو توجيه جديد هنا...">
-                    <button id="add-btn" onclick="addNote()"><i class="fas fa-plus"></i> إضافة</button>
-                </div>
+
             </div>
         </div>
     </div>
 
     <script>
-        /* === التوجيه الاستراتيجي للربط السحابي (مهم جداً يا قائدي) ===
-         لكي يعمل هذا الملف عبر جميع الأجهزة (يشارك نفس الداتا)، يجب أن نستخدم قاعدة بيانات.
-         وفرت لك هنا الهيكل للربط مع JSONBin.io (خدمة مجانية تحفظ البيانات برابط).
-         في الوقت الحالي، الكود سيستمر باستخدام الـ LocalStorage (الذاكرة المحلية) حتى تقوم 
-         بإنشاء حساب مجاني في JSONBin ووضع مفاتيحك بالأسفل. 
-        */
-
-        const CLOUD_API_URL = ""; // ضع هنا رابط الـ BIN الخاص بك (مثال: https://api.jsonbin.io/v3/b/123456)
-        const CLOUD_API_KEY = ""; // ضع هنا مفتاح الـ Master Key الخاص بك
-
-        let allNotesData = {}; // قاعدة البيانات في الذاكرة
-
-        const sectionsData = {
-            1: { title: "المالية والمبيعات", icon: "fa-wallet", color: "var(--clr-1)", tasks: ["تحصيل المبيعات", "إدارة السيولة"] },
-            2: { title: "البرنامج التدريبي", icon: "fa-graduation-cap", color: "var(--clr-2)", tasks: ["تجهيز السيت أب", "جدول المحاضرات"] },
-            3: { title: "التصوير والإنتاج", icon: "fa-video", color: "var(--clr-3)", tasks: ["توثيق الفلوقات", "المونتاج السريع"] },
-            4: { title: "العمليات والحجوزات", icon: "fa-map-marked-alt", color: "var(--clr-4)", tasks: ["تأكيد الحجوزات", "النقل الداخلي"] },
-            5: { title: "التسويق والرعايات", icon: "fa-ad", color: "var(--clr-5)", tasks: ["حملات الـ FOMO", "رعايات الشركات"] },
-            6: { title: "البرنامج الترفيهي", icon: "fa-umbrella-beach", color: "var(--clr-6)", tasks: ["الرحلات السياحية", "الفعاليات الليلية"] },
-            7: { title: "المطبوعات والهوية", icon: "fa-print", color: "var(--clr-7)", tasks: ["تجهيز الملابس", "البروشورات"] },
-            8: { title: "المتطوعون", icon: "fa-user-friends", color: "var(--clr-8)", tasks: ["الاستقبال والدعم", "إرشاد المتداولين"] },
-            9: { title: "المنسق الميداني", icon: "fa-user-shield", color: "var(--clr-9)", tasks: ["القيادة الميدانية", "خطة الطوارئ"] }
+        // البيانات الافتراضية
+        const initialSetup = {
+            1: ["فحص بوابات الدفع وتأكيد استلام المبالغ.", "تفعيل حسابات الوكالة (IB) وربطها بالعملاء.", "عزل المشترين فوراً في الجروب المغلق.", "متابعة من سحبوا السلة (Cart Abandonment)."],
+            2: ["إدارة جلسات التداول الحي في الجروب المغلق.", "المراقبة الصارمة للـ Drawdown واستبعاد المخالفين.", "إصدار لوحة الصدارة (Leaderboard) أسبوعياً.", "تحديد الفائزين النهائيين المؤهلين للسفر."],
+            3: ["تصوير لقطات الهوك الحقيقية في السيت أب.", "مونتاج الريلز بـ After Effects والـ Zoom In/Out.", "توثيق المعسكر (فندق، قطار، تخييم) بجودة سينمائية.", "إنتاج الفلوقات اليومية للتسويق الفيروسي."],
+            4: ["حجز تذاكر الطيران وتأشيرات الدخول.", "حجز مقصورات قطار النوم للتوثيق الميداني.", "توفير حلول إنترنت 5G وبنوك طاقة للتخييم."],
+            5: ["كتابة سكربتات محتوى جذابة (FOMO وتعليمي).", "التواصل مع شركات التمويل لرعايات (B2B).", "نشر الريلز مع الوصف والهاشتاكات المستهدفة."],
+            6: ["تخطيط الجولات السياحية في تايلند.", "تنسيق فعاليات ليلية لكسر ضغط التداول."],
+            7: ["تصميم وطباعة تيشرتات الإمبراطورية.", "تجهيز حقائب ترحيبية (Welcome Kits)."],
+            8: ["الرد على استفسارات المشترين 24/7.", "الدعم التقني لفتح حسابات الوكالة."],
+            9: ["إدارة التحركات اليومية للفريق في تايلند.", "وضع خطة طوارئ (Plan B) لانقطاع الإنترنت."]
         };
 
-        let currentActiveSection = null;
+        const config = {
+            1: { title: "المالية والمبيعات", icon: "fa-wallet", color: "var(--clr-1)" },
+            2: { title: "البرنامج التدريبي", icon: "fa-graduation-cap", color: "var(--clr-2)" },
+            3: { title: "التصوير والإنتاج", icon: "fa-video", color: "var(--clr-3)" },
+            4: { title: "العمليات والحجوزات", icon: "fa-map-marked-alt", color: "var(--clr-4)" },
+            5: { title: "التسويق والرعايات", icon: "fa-ad", color: "var(--clr-5)" },
+            6: { title: "البرنامج الترفيهي", icon: "fa-umbrella-beach", color: "var(--clr-6)" },
+            7: { title: "المطبوعات والهوية", icon: "fa-print", color: "var(--clr-7)" },
+            8: { title: "المتطوعون", icon: "fa-user-friends", color: "var(--clr-8)" },
+            9: { title: "المنسق الميداني", icon: "fa-user-shield", color: "var(--clr-9)" }
+        };
 
-        // تهيئة النظام
-        function initSystem() {
-            const container = document.getElementById('cards-container');
-            for (let id in sectionsData) {
-                const data = sectionsData[id];
+        let currentID = null;
+        let empireData = JSON.parse(localStorage.getItem('empire_master_data')) || initialSetup;
+        let statusData = JSON.parse(localStorage.getItem('empire_status_data')) || {};
+
+        function init() {
+            const grid = document.getElementById('sections-grid');
+            for (let id in config) {
+                const s = config[id];
                 const card = document.createElement('div');
                 card.className = 'nav-card';
-                card.style.borderTop = `4px solid ${data.color}`;
-                card.innerHTML = `<div class="card-icon" style="color: ${data.color};"><i class="fas ${data.icon}"></i></div><div class="card-title">${data.title}</div>`;
-                card.onclick = () => openSection(id);
-                container.appendChild(card);
-            }
-            loadDataFromCloud();
-        }
-
-        // جلب البيانات (سحابياً أو محلياً)
-        async function loadDataFromCloud() {
-            if (CLOUD_API_URL && CLOUD_API_KEY) {
-                try {
-                    let response = await fetch(CLOUD_API_URL, { headers: { 'X-Master-Key': CLOUD_API_KEY } });
-                    let result = await response.json();
-                    allNotesData = result.record || {};
-                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-cloud"></i> متصل بالسحابة بنجاح';
-                } catch (error) {
-                    console.error("خطأ في السحابة:", error);
-                    loadLocalData();
-                }
-            } else {
-                loadLocalData();
-                document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-hdd"></i> وضع الحفظ المحلي (انتظر إعداد السحابة)';
-                document.getElementById('cloud-indicator').style.color = "var(--clr-3)";
-                document.getElementById('cloud-indicator').style.borderColor = "var(--clr-3)";
+                card.style.borderTop = `5px solid ${s.color}`;
+                card.innerHTML = `<div class="card-icon" style="color: ${s.color};"><i class="fas ${s.icon}"></i></div><div class="card-title">${s.title}</div>`;
+                card.onclick = () => enterSection(id);
+                grid.appendChild(card);
             }
         }
 
-        function loadLocalData() {
-            allNotesData = JSON.parse(localStorage.getItem('te_all_notes')) || {};
-        }
-
-        // حفظ البيانات (سحابياً أو محلياً)
-        async function saveDataToCloud() {
-            if (CLOUD_API_URL && CLOUD_API_KEY) {
-                try {
-                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-sync fa-spin"></i> جاري المزامنة...';
-                    await fetch(CLOUD_API_URL, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
-                        body: JSON.stringify(allNotesData)
-                    });
-                    document.getElementById('cloud-indicator').innerHTML = '<i class="fas fa-check-circle"></i> تم الحفظ للجميع';
-                } catch (error) {
-                    console.error("فشل الحفظ السحابي", error);
-                }
-            } else {
-                localStorage.setItem('te_all_notes', JSON.stringify(allNotesData));
-            }
-        }
-
-        function openSection(id) {
-            currentActiveSection = id;
-            const data = sectionsData[id];
+        function enterSection(id) {
+            currentID = id;
             document.getElementById('dashboard-view').classList.remove('active');
             document.getElementById('detail-view').classList.add('active');
             
-            document.getElementById('sec-icon').className = `fas ${data.icon}`;
-            document.getElementById('sec-title').innerText = data.title;
-            document.getElementById('sec-header').style.color = data.color;
-            document.getElementById('sec-tasks-box').style.borderColor = data.color;
-            document.getElementById('sec-tasks').innerHTML = data.tasks.map(t => `<li><i class="fas fa-circle" style="color:${data.color}"></i> ${t}</li>`).join('');
-            document.getElementById('add-btn').style.backgroundColor = data.color;
-
-            renderNotes();
+            const s = config[id];
+            document.getElementById('header-icon').className = `fas ${s.icon}`;
+            document.getElementById('header-title').innerText = s.title;
+            document.getElementById('header-el').style.color = s.color;
+            
+            renderMasterList();
         }
 
-        function closeSection() {
-            currentActiveSection = null;
+        function exitSection() {
+            currentID = null;
             document.getElementById('detail-view').classList.remove('active');
             document.getElementById('dashboard-view').classList.add('active');
         }
 
-        function renderNotes() {
-            const list = document.getElementById('notes-list');
-            let sectionNotes = allNotesData[currentActiveSection] || [];
-            
-            if(sectionNotes.length === 0) {
-                list.innerHTML = `<div class="loading-text">لا توجد ملاحظات. أضف توجيهك وسيحفظ تلقائياً عبر الأجهزة.</div>`;
-                return;
-            }
-
+        function renderMasterList() {
+            const list = document.getElementById('master-list');
             list.innerHTML = "";
-            sectionNotes.forEach((note, index) => {
-                const div = document.createElement("div");
-                div.className = "note-card";
-                div.style.borderRightColor = sectionsData[currentActiveSection].color;
-                div.innerHTML = `<div class="note-text">${note}</div><button class="btn-del" onclick="deleteNote(${index})"><i class="fas fa-trash-alt"></i></button>`;
-                list.appendChild(div);
+            const items = empireData[currentID] || [];
+
+            items.forEach((text, index) => {
+                const key = `${currentID}-${text}`;
+                const isDone = statusData[key] ? 'is-done' : '';
+                const isChecked = statusData[key] ? 'checked' : '';
+
+                list.innerHTML += `
+                    <div class="item-row ${isDone}" id="row-${index}">
+                        <div class="item-main">
+                            <input type="checkbox" class="item-checkbox" ${isChecked} onchange="toggleItem('${text}', ${index})">
+                            <span class="item-text">${text}</span>
+                        </div>
+                        <button class="btn-delete-row" onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                `;
             });
             list.scrollTop = list.scrollHeight;
         }
 
-        function addNote() {
-            const input = document.getElementById('note-input');
-            const text = input.value.trim();
-            if (text && currentActiveSection) {
-                if (!allNotesData[currentActiveSection]) allNotesData[currentActiveSection] = [];
-                allNotesData[currentActiveSection].push(text);
-                renderNotes();
-                saveDataToCloud(); // يقوم برفعها للسحابة فوراً
+        function addNewItem() {
+            const input = document.getElementById('master-input');
+            const val = input.value.trim();
+            if (val && currentID) {
+                if (!empireData[currentID]) empireData[currentID] = [];
+                empireData[currentID].push(val);
                 input.value = "";
+                sync();
+                renderMasterList();
             }
         }
 
-        function deleteNote(index) {
-            if(currentActiveSection && allNotesData[currentActiveSection]) {
-                allNotesData[currentActiveSection].splice(index, 1);
-                renderNotes();
-                saveDataToCloud(); // يقوم بتحديث السحابة فوراً
-            }
+        function toggleItem(text, index) {
+            const key = `${currentID}-${text}`;
+            statusData[key] = !statusData[key];
+            sync();
+            renderMasterList();
         }
 
-        document.getElementById('note-input').addEventListener("keypress", (e) => { if(e.key === "Enter") addNote(); });
-        
-        window.onload = initSystem;
+        function removeItem(index) {
+            const text = empireData[currentID][index];
+            delete statusData[`${currentID}-${text}`];
+            empireData[currentID].splice(index, 1);
+            sync();
+            renderMasterList();
+        }
+
+        function sync() {
+            localStorage.setItem('empire_master_data', JSON.stringify(empireData));
+            localStorage.setItem('empire_status_data', JSON.stringify(statusData));
+        }
+
+        document.getElementById('master-input').addEventListener("keypress", (e) => { if(e.key === "Enter") addNewItem(); });
+
+        window.onload = init;
     </script>
 </body>
 </html>

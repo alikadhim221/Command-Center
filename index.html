@@ -18,6 +18,7 @@
             --clr-1: #FFD700; --clr-2: #39FF14; --clr-3: #FF3131;
             --clr-4: #00FFFF; --clr-5: #BD00FF; --clr-6: #FF5E00;
             --clr-7: #00FF95; --clr-8: #FF007F; --clr-9: #EDEDED;
+            --active-color: #39FF14;
         }
 
         body {
@@ -54,39 +55,45 @@
             padding-right: 10px; 
             margin-bottom: 25px; 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* تم التقسيم إلى عمودين */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 15px; 
-            align-content: start; /* يمنع تمدد العناصر للأسفل إذا كان العدد قليلاً */
+            align-content: start; 
         }
         .master-list-wrapper::-webkit-scrollbar { width: 6px; }
         .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-        /* لضمان التجاوب إذا تم فتحها من شاشة صغيرة، تعود لعمود واحد */
         @media (max-width: 900px) {
-            .master-list-wrapper {
-                grid-template-columns: 1fr;
-            }
+            .master-list-wrapper { grid-template-columns: 1fr; }
         }
 
-        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.04); padding: 18px 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.03); transition: 0.3s; border-right: 5px solid transparent; height: fit-content; }
-        .item-row:hover { background: rgba(255,255,255,0.07); transform: translateY(-3px); }
+        /* تصميم البطاقة (المهمة/الملاحظة) */
+        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; border-right: 4px solid var(--active-color); height: fit-content; }
+        .item-row:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
         
         /* حالة الإنجاز (Toggled) */
-        .item-row.is-done { opacity: 0.35; filter: grayscale(100%); }
+        .item-row.is-done { opacity: 0.4; filter: grayscale(100%); border-right-color: transparent; }
         .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); }
 
-        .item-main { display: flex; align-items: flex-start; gap: 15px; flex: 1; }
-        .item-checkbox { width: 22px; height: 22px; cursor: pointer; accent-color: var(--clr-2); margin-top: 3px; }
-        .item-text { color: #fff; font-size: 1.1rem; line-height: 1.6; font-weight: 400; word-break: break-word; }
+        /* اليمين: علامة الجيك والنص */
+        .item-main { display: flex; align-items: flex-start; gap: 12px; flex: 1; }
+        .item-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--active-color); margin-top: 4px; }
+        .item-text { color: #fff; font-size: 1.1rem; line-height: 1.5; font-weight: 700; word-break: break-word; }
         
-        .btn-delete-row { background: rgba(255,50,50,0.1); color: #ff4444; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; height: fit-content; }
-        .btn-delete-row:hover { background: #ff3131; color: #fff; }
+        /* اليسار: أزرار التحكم (تم / حذف) */
+        .item-actions { display: flex; align-items: center; gap: 8px; }
+        .btn-action { border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+        
+        .btn-done { background: rgba(57, 255, 20, 0.1); color: var(--clr-2); }
+        .btn-done:hover { background: var(--clr-2); color: #000; }
+        
+        .btn-delete { background: rgba(255, 50, 50, 0.1); color: #ff4444; }
+        .btn-delete:hover { background: #ff4444; color: #fff; }
 
         /* منطقة الإدخال في الأسفل */
-        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 18px; border: 1px solid var(--glass-border); }
+        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); }
         .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.2rem; outline: none; }
-        .input-footer button { background: #fff; color: #000; border: none; padding: 12px 45px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
-        .input-footer button:hover { transform: scale(1.03); background: var(--clr-2); }
+        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 12px 40px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .input-footer button:hover { opacity: 0.9; transform: scale(1.02); }
 
     </style>
 </head>
@@ -110,7 +117,7 @@
 
                 <div class="input-footer">
                     <input type="text" id="master-input" placeholder="أضف مهمة، ملاحظة، أو أمر استراتيجي جديد هنا...">
-                    <button onclick="addNewItem()"><i class="fas fa-plus-circle"></i> إضافة</button>
+                    <button id="btn-add-main" onclick="addNewItem()"><i class="fas fa-plus-circle"></i> إضافة</button>
                 </div>
 
             </div>
@@ -118,7 +125,6 @@
     </div>
 
     <script>
-        // البيانات الافتراضية
         const initialSetup = {
             1: ["فحص بوابات الدفع وتأكيد استلام المبالغ.", "تفعيل حسابات الوكالة (IB) وربطها بالعملاء.", "عزل المشترين فوراً في الجروب المغلق.", "متابعة من سحبوا السلة (Cart Abandonment)."],
             2: ["إدارة جلسات التداول الحي في الجروب المغلق.", "المراقبة الصارمة للـ Drawdown واستبعاد المخالفين.", "إصدار لوحة الصدارة (Leaderboard) أسبوعياً.", "تحديد الفائزين النهائيين المؤهلين للسفر."],
@@ -166,9 +172,13 @@
             document.getElementById('detail-view').classList.add('active');
             
             const s = config[id];
+            document.documentElement.style.setProperty('--active-color', s.color);
+            
             document.getElementById('header-icon').className = `fas ${s.icon}`;
             document.getElementById('header-title').innerText = s.title;
             document.getElementById('header-el').style.color = s.color;
+            document.getElementById('btn-add-main').style.backgroundColor = s.color;
+            document.getElementById('btn-add-main').style.color = "#000";
             
             renderMasterList();
         }
@@ -192,10 +202,13 @@
                 list.innerHTML += `
                     <div class="item-row ${isDone}" id="row-${index}">
                         <div class="item-main">
-                            <input type="checkbox" class="item-checkbox" ${isChecked} onchange="toggleItem('${text}', ${index})">
+                            <input type="checkbox" class="item-checkbox" ${isChecked} onchange="toggleItem('${text}')">
                             <span class="item-text">${text}</span>
                         </div>
-                        <button class="btn-delete-row" onclick="removeItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                        <div class="item-actions">
+                            <button class="btn-action btn-done" onclick="toggleItem('${text}')" title="تحديد كمنجز"><i class="fas fa-check"></i></button>
+                            <button class="btn-action btn-delete" onclick="removeItem(${index})" title="حذف نهائي"><i class="fas fa-trash-alt"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -214,7 +227,7 @@
             }
         }
 
-        function toggleItem(text, index) {
+        function toggleItem(text) {
             const key = `${currentID}-${text}`;
             statusData[key] = !statusData[key];
             sync();

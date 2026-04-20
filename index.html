@@ -21,11 +21,14 @@
             --active-color: #39FF14;
         }
 
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Cairo', sans-serif; background-color: var(--bg-base); color: var(--text-main);
             margin: 0; padding: 20px; min-height: 100vh;
             background-image: radial-gradient(circle at 50% 0%, rgba(40, 40, 70, 0.25), transparent 70%);
             display: flex; flex-direction: column;
+            overflow-x: hidden;
         }
 
         .view { display: none; animation: fadeIn 0.4s ease-out; }
@@ -33,59 +36,84 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* لوحة الأقسام الرئيسية */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 30px auto; width: 100%; }
-        .nav-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 35px 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; width: 100%; }
+        .nav-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
         .nav-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); background: rgba(30, 30, 45, 0.8); border-color: rgba(255,255,255,0.15); }
-        .card-icon { font-size: 3.2rem; margin-bottom: 18px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
-        .card-title { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; }
+        .card-icon { font-size: 3rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+        .card-title { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
 
         /* مؤشر السحابة */
-        .sync-status { text-align: center; font-size: 1rem; color: var(--clr-2); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; margin-left: auto; margin-right: auto; border: 1px solid rgba(57, 255, 20, 0.2); }
+        .sync-status { text-align: center; font-size: 0.95rem; color: var(--clr-2); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px 18px; border-radius: 30px; width: fit-content; margin-left: auto; margin-right: auto; border: 1px solid rgba(57, 255, 20, 0.2); }
 
-        /* حاوية التفاصيل العملاقة */
-        .detail-container { max-width: 96%; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
-        .btn-back { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: #fff; padding: 10px 25px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 600; margin-bottom: 20px; align-self: flex-start; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        /* حاوية التفاصيل */
+        .detail-container { max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
+        .btn-back { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 600; margin-bottom: 15px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-back:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); }
         
-        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 28px; padding: 40px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.7); overflow: hidden; }
+        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.7); overflow: hidden; }
         
-        .detail-header { display: flex; align-items: center; gap: 20px; font-size: 2.8rem; font-weight: 900; margin-bottom: 30px; border-bottom: 2px solid rgba(255,255,255,0.04); padding-bottom: 20px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .detail-header { display: flex; align-items: center; gap: 15px; font-size: 2.2rem; font-weight: 900; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.04); padding-bottom: 15px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
         /* القائمة الموحدة بتصميم العمودين */
-        .master-list-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 15px; margin-bottom: 30px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; align-content: start; }
-        .master-list-wrapper::-webkit-scrollbar { width: 8px; }
+        .master-list-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-content: start; }
+        .master-list-wrapper::-webkit-scrollbar { width: 5px; }
         .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-        .master-list-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
-
-        @media (max-width: 1000px) { .master-list-wrapper { grid-template-columns: 1fr; } }
-
-        /* تصميم البطاقة الحديث */
-        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.02); padding: 18px 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; border-right: 5px solid var(--active-color); height: fit-content; position: relative; overflow: hidden; }
-        .item-row:hover { background: rgba(255,255,255,0.05); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
         
-        /* حالة الإنجاز */
-        .item-row.is-done { opacity: 0.45; filter: grayscale(100%); border-right-color: rgba(255,255,255,0.1); background: transparent; box-shadow: none; }
+        /* تصميم البطاقة الحديث */
+        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(255,255,255,0.02); padding: 15px 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; border-right: 4px solid var(--active-color); height: fit-content; }
+        .item-row:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.08); }
+        
+        .item-row.is-done { opacity: 0.5; filter: grayscale(100%); border-right-color: rgba(255,255,255,0.1); background: transparent; box-shadow: none; }
         .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); font-weight: 400; }
 
-        /* اليمين (النص القابل للنقر) */
-        .item-main { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; user-select: none; }
-        .item-text { color: #fff; font-size: 1.15rem; line-height: 1.6; font-weight: 600; word-break: break-word; transition: 0.3s; }
+        .item-main { display: flex; align-items: flex-start; gap: 12px; flex: 1; cursor: pointer; user-select: none; }
+        .item-text { color: #fff; font-size: 1.05rem; line-height: 1.5; font-weight: 600; word-break: break-word; transition: 0.3s; margin-top: 2px; }
         
-        /* اليسار (أزرار التحكم) */
-        .item-actions { display: flex; align-items: center; gap: 10px; }
-        .btn-action { border: none; width: 42px; height: 42px; border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .item-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .btn-action { border: none; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
         .btn-done { background: rgba(57, 255, 20, 0.1); color: var(--clr-2); }
-        .btn-done:hover { background: var(--clr-2); color: #000; transform: scale(1.1); box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+        .btn-done:hover { background: var(--clr-2); color: #000; transform: scale(1.05); }
         .btn-delete { background: rgba(255, 50, 50, 0.1); color: #ff4444; }
-        .btn-delete:hover { background: #ff4444; color: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 50, 50, 0.4); }
+        .btn-delete:hover { background: #ff4444; color: #fff; transform: scale(1.05); }
 
         /* منطقة الإدخال */
-        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.4); padding: 20px 25px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
-        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.25rem; outline: none; }
-        .input-footer input::placeholder { color: rgba(255,255,255,0.3); }
-        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 15px 45px; border-radius: 14px; font-weight: 900; font-family: 'Cairo'; font-size: 1.25rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .input-footer button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.5); filter: brightness(1.1); }
+        .input-footer { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 15px 20px; border-radius: 18px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); align-items: center; }
+        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.1rem; outline: none; width: 100%; }
+        .input-footer input::placeholder { color: rgba(255,255,255,0.4); font-size: 1rem; }
+        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .input-footer button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 
+        /* ========================================= */
+        /* التجاوب مع شاشات الموبايل (Responsive CSS) */
+        /* ========================================= */
+        @media (max-width: 900px) {
+            .master-list-wrapper { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .cards-grid { grid-template-columns: 1fr; gap: 15px; margin: 10px auto; }
+            .nav-card { padding: 20px; border-radius: 16px; }
+            .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
+            .card-title { font-size: 1.2rem; }
+            
+            .detail-container { height: 95vh; }
+            .detail-glass-panel { padding: 15px; border-radius: 18px; }
+            .detail-header { font-size: 1.6rem; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; }
+            
+            .item-row { padding: 12px 15px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .item-actions { width: 100%; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+            .item-text { font-size: 1rem; }
+            .btn-action { width: 35px; height: 35px; font-size: 1rem; }
+
+            .input-footer { padding: 10px 12px; border-radius: 14px; gap: 8px; }
+            .input-footer input { font-size: 1rem; }
+            /* إخفاء كلمة "إضافة" في الموبايل والاكتفاء بالأيقونة لتوفير مساحة للكتابة */
+            .input-footer button span { display: none; }
+            .input-footer button { padding: 12px 20px; border-radius: 10px; }
+            
+            .sync-status { font-size: 0.8rem; padding: 6px 15px; }
+        }
     </style>
 </head>
 <body>
@@ -104,15 +132,14 @@
                 </div>
                 <div class="master-list-wrapper" id="master-list"></div>
                 <div class="input-footer">
-                    <input type="text" id="master-input" placeholder="أضف مهمة، ملاحظة، أو أمر استراتيجي جديد هنا...">
-                    <button id="btn-add-main" onclick="addNewItem()"><i class="fas fa-plus-circle"></i> إضافة</button>
+                    <input type="text" id="master-input" placeholder="أضف مهمة أو توجيه جديد هنا...">
+                    <button id="btn-add-main" onclick="addNewItem()"><i class="fas fa-paper-plane"></i> <span>إرسال</span></button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // مفاتيح الربط السحابي الخاصة بك
         const CLOUD_API_URL = "https://api.jsonbin.io/v3/b/69e3ff94856a6821894b1a89";
         const CLOUD_API_KEY = "$2a$10$qg/zEcP90Y1YYOfOjaEGk.0jAq2BXhCgPTGSxHoJGRjMEbYo.fiBq";
 
@@ -161,9 +188,7 @@
         async function loadFromCloud() {
             const statusEl = document.getElementById('sync-status');
             try {
-                let response = await fetch(CLOUD_API_URL, {
-                    headers: { 'X-Master-Key': CLOUD_API_KEY }
-                });
+                let response = await fetch(CLOUD_API_URL, { headers: { 'X-Master-Key': CLOUD_API_KEY } });
                 let data = await response.json();
                 
                 if (data.record && data.record.empireData) {
@@ -171,7 +196,7 @@
                     statusData = data.record.statusData || {};
                     statusEl.innerHTML = '<i class="fas fa-check-circle"></i> متصل بالسحابة (مزامنة فورية)';
                     statusEl.style.color = "var(--clr-2)";
-                    statusEl.style.borderColor = "rgba(57, 255, 20, 0.2)";
+                    statusEl.style.borderColor = "rgba(57, 255, 20, 0.3)";
                 } else {
                     empireData = initialSetup;
                     statusEl.innerHTML = '<i class="fas fa-cloud"></i> تم تهيئة السحابة بنجاح';
@@ -179,9 +204,9 @@
             } catch (error) {
                 empireData = JSON.parse(localStorage.getItem('empire_master_data')) || initialSetup;
                 statusData = JSON.parse(localStorage.getItem('empire_status_data')) || {};
-                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> وضع الحفظ المحلي (خطأ في الاتصال)';
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الحفظ المحلي (لا يوجد إنترنت)';
                 statusEl.style.color = "var(--clr-3)";
-                statusEl.style.borderColor = "rgba(255, 49, 49, 0.2)";
+                statusEl.style.borderColor = "rgba(255, 49, 49, 0.3)";
             }
         }
 
@@ -192,15 +217,10 @@
             try {
                 await fetch(CLOUD_API_URL, {
                     method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'X-Master-Key': CLOUD_API_KEY 
-                    },
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
                     body: JSON.stringify({ empireData, statusData })
                 });
-            } catch (error) {
-                console.error("فشل الرفع للسحابة", error);
-            }
+            } catch (error) { console.error("فشل الرفع للسحابة", error); }
         }
 
         function enterSection(id) {

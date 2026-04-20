@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إمبراطورية المتداولين | وحدة التحكم الموحدة</title>
+    <title>إمبراطورية المتداولين | السحابة المركزية</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-base: #030308;
+            --bg-base: #05050A;
             --text-main: #F8F8FF;
             --text-muted: #888899;
-            --glass-bg: rgba(15, 15, 25, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(20, 20, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.07);
             --clr-1: #FFD700; --clr-2: #39FF14; --clr-3: #FF3131;
             --clr-4: #00FFFF; --clr-5: #BD00FF; --clr-6: #FF5E00;
             --clr-7: #00FF95; --clr-8: #FF007F; --clr-9: #EDEDED;
@@ -24,107 +24,98 @@
         body {
             font-family: 'Cairo', sans-serif; background-color: var(--bg-base); color: var(--text-main);
             margin: 0; padding: 20px; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, rgba(40, 40, 60, 0.2), transparent 80%);
+            background-image: radial-gradient(circle at 50% 0%, rgba(40, 40, 70, 0.25), transparent 70%);
             display: flex; flex-direction: column;
         }
 
-        .view { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .view { display: none; animation: fadeIn 0.4s ease-out; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* لوحة الأقسام الرئيسية */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; width: 100%; }
-        .nav-card { background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .nav-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .card-icon { font-size: 3rem; margin-bottom: 15px; }
-        .card-title { font-size: 1.5rem; font-weight: 900; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 30px auto; width: 100%; }
+        .nav-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 35px 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .nav-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); background: rgba(30, 30, 45, 0.8); border-color: rgba(255,255,255,0.15); }
+        .card-icon { font-size: 3.2rem; margin-bottom: 18px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
+        .card-title { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; }
+
+        /* مؤشر السحابة */
+        .sync-status { text-align: center; font-size: 1rem; color: var(--clr-2); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; width: fit-content; margin-left: auto; margin-right: auto; border: 1px solid rgba(57, 255, 20, 0.2); }
 
         /* حاوية التفاصيل العملاقة */
-        .detail-container { max-width: 98%; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
-        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-family: 'Cairo'; margin-bottom: 15px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-back:hover { background: rgba(255,255,255,0.1); }
+        .detail-container { max-width: 96%; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
+        .btn-back { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: #fff; padding: 10px 25px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 600; margin-bottom: 20px; align-self: flex-start; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-back:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); }
         
-        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 35px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.6); overflow: hidden; }
+        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 28px; padding: 40px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.7); overflow: hidden; }
         
-        .detail-header { display: flex; align-items: center; gap: 20px; font-size: 2.5rem; font-weight: 900; margin-bottom: 25px; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 20px; }
+        .detail-header { display: flex; align-items: center; gap: 20px; font-size: 2.8rem; font-weight: 900; margin-bottom: 30px; border-bottom: 2px solid rgba(255,255,255,0.04); padding-bottom: 20px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
-        /* القائمة الموحدة بتصميم العمودين (Dual-Column Grid) */
-        .master-list-wrapper { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding-right: 10px; 
-            margin-bottom: 25px; 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 15px; 
-            align-content: start; 
-        }
-        .master-list-wrapper::-webkit-scrollbar { width: 6px; }
-        .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        /* القائمة الموحدة بتصميم العمودين */
+        .master-list-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 15px; margin-bottom: 30px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; align-content: start; }
+        .master-list-wrapper::-webkit-scrollbar { width: 8px; }
+        .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .master-list-wrapper::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-        @media (max-width: 900px) {
-            .master-list-wrapper { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1000px) { .master-list-wrapper { grid-template-columns: 1fr; } }
 
-        /* تصميم البطاقة (المهمة/الملاحظة) */
-        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; border-right: 4px solid var(--active-color); height: fit-content; }
-        .item-row:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+        /* تصميم البطاقة الحديث */
+        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; background: rgba(255,255,255,0.02); padding: 18px 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; border-right: 5px solid var(--active-color); height: fit-content; position: relative; overflow: hidden; }
+        .item-row:hover { background: rgba(255,255,255,0.05); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
         
-        /* حالة الإنجاز (Toggled) */
-        .item-row.is-done { opacity: 0.4; filter: grayscale(100%); border-right-color: transparent; }
-        .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); }
+        /* حالة الإنجاز */
+        .item-row.is-done { opacity: 0.45; filter: grayscale(100%); border-right-color: rgba(255,255,255,0.1); background: transparent; box-shadow: none; }
+        .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); font-weight: 400; }
 
-        /* اليمين: علامة الجيك والنص */
-        .item-main { display: flex; align-items: flex-start; gap: 12px; flex: 1; }
-        .item-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--active-color); margin-top: 4px; }
-        .item-text { color: #fff; font-size: 1.1rem; line-height: 1.5; font-weight: 700; word-break: break-word; }
+        /* اليمين (النص القابل للنقر) */
+        .item-main { display: flex; align-items: center; gap: 15px; flex: 1; cursor: pointer; user-select: none; }
+        .item-text { color: #fff; font-size: 1.15rem; line-height: 1.6; font-weight: 600; word-break: break-word; transition: 0.3s; }
         
-        /* اليسار: أزرار التحكم (تم / حذف) */
-        .item-actions { display: flex; align-items: center; gap: 8px; }
-        .btn-action { border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
-        
+        /* اليسار (أزرار التحكم) */
+        .item-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-action { border: none; width: 42px; height: 42px; border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
         .btn-done { background: rgba(57, 255, 20, 0.1); color: var(--clr-2); }
-        .btn-done:hover { background: var(--clr-2); color: #000; }
-        
+        .btn-done:hover { background: var(--clr-2); color: #000; transform: scale(1.1); box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
         .btn-delete { background: rgba(255, 50, 50, 0.1); color: #ff4444; }
-        .btn-delete:hover { background: #ff4444; color: #fff; }
+        .btn-delete:hover { background: #ff4444; color: #fff; transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 50, 50, 0.4); }
 
-        /* منطقة الإدخال في الأسفل */
-        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.2rem; outline: none; }
-        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 12px 40px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.2rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .input-footer button:hover { opacity: 0.9; transform: scale(1.02); }
+        /* منطقة الإدخال */
+        .input-footer { display: flex; gap: 15px; background: rgba(0,0,0,0.4); padding: 20px 25px; border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.25rem; outline: none; }
+        .input-footer input::placeholder { color: rgba(255,255,255,0.3); }
+        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 15px 45px; border-radius: 14px; font-weight: 900; font-family: 'Cairo'; font-size: 1.25rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .input-footer button:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.5); filter: brightness(1.1); }
 
     </style>
 </head>
 <body>
 
     <div id="dashboard-view" class="view active">
+        <div class="sync-status" id="sync-status"><i class="fas fa-spinner fa-spin"></i> جاري الاتصال بالسحابة...</div>
         <div class="cards-grid" id="sections-grid"></div>
     </div>
 
     <div id="detail-view" class="view">
         <div class="detail-container">
-            <button class="btn-back" onclick="exitSection()"><i class="fas fa-chevron-right"></i> العودة للوحة القيادة</button>
+            <button class="btn-back" onclick="exitSection()"><i class="fas fa-arrow-right"></i> العودة للوحة القيادة</button>
             <div class="detail-glass-panel">
-                
                 <div class="detail-header" id="header-el">
                     <i id="header-icon"></i> <span id="header-title"></span>
                 </div>
-
-                <div class="master-list-wrapper" id="master-list">
-                    </div>
-
+                <div class="master-list-wrapper" id="master-list"></div>
                 <div class="input-footer">
                     <input type="text" id="master-input" placeholder="أضف مهمة، ملاحظة، أو أمر استراتيجي جديد هنا...">
                     <button id="btn-add-main" onclick="addNewItem()"><i class="fas fa-plus-circle"></i> إضافة</button>
                 </div>
-
             </div>
         </div>
     </div>
 
     <script>
+        // مفاتيح الربط السحابي الخاصة بك
+        const CLOUD_API_URL = "https://api.jsonbin.io/v3/b/69e3ff94856a6821894b1a89";
+        const CLOUD_API_KEY = "$2a$10$qg/zEcP90Y1YYOfOjaEGk.0jAq2BXhCgPTGSxHoJGRjMEbYo.fiBq";
+
         const initialSetup = {
             1: ["فحص بوابات الدفع وتأكيد استلام المبالغ.", "تفعيل حسابات الوكالة (IB) وربطها بالعملاء.", "عزل المشترين فوراً في الجروب المغلق.", "متابعة من سحبوا السلة (Cart Abandonment)."],
             2: ["إدارة جلسات التداول الحي في الجروب المغلق.", "المراقبة الصارمة للـ Drawdown واستبعاد المخالفين.", "إصدار لوحة الصدارة (Leaderboard) أسبوعياً.", "تحديد الفائزين النهائيين المؤهلين للسفر."],
@@ -150,19 +141,65 @@
         };
 
         let currentID = null;
-        let empireData = JSON.parse(localStorage.getItem('empire_master_data')) || initialSetup;
-        let statusData = JSON.parse(localStorage.getItem('empire_status_data')) || {};
+        let empireData = {};
+        let statusData = {};
 
-        function init() {
+        async function init() {
             const grid = document.getElementById('sections-grid');
             for (let id in config) {
                 const s = config[id];
                 const card = document.createElement('div');
                 card.className = 'nav-card';
-                card.style.borderTop = `5px solid ${s.color}`;
+                card.style.borderTop = `6px solid ${s.color}`;
                 card.innerHTML = `<div class="card-icon" style="color: ${s.color};"><i class="fas ${s.icon}"></i></div><div class="card-title">${s.title}</div>`;
                 card.onclick = () => enterSection(id);
                 grid.appendChild(card);
+            }
+            await loadFromCloud();
+        }
+
+        async function loadFromCloud() {
+            const statusEl = document.getElementById('sync-status');
+            try {
+                let response = await fetch(CLOUD_API_URL, {
+                    headers: { 'X-Master-Key': CLOUD_API_KEY }
+                });
+                let data = await response.json();
+                
+                if (data.record && data.record.empireData) {
+                    empireData = data.record.empireData;
+                    statusData = data.record.statusData || {};
+                    statusEl.innerHTML = '<i class="fas fa-check-circle"></i> متصل بالسحابة (مزامنة فورية)';
+                    statusEl.style.color = "var(--clr-2)";
+                    statusEl.style.borderColor = "rgba(57, 255, 20, 0.2)";
+                } else {
+                    empireData = initialSetup;
+                    statusEl.innerHTML = '<i class="fas fa-cloud"></i> تم تهيئة السحابة بنجاح';
+                }
+            } catch (error) {
+                empireData = JSON.parse(localStorage.getItem('empire_master_data')) || initialSetup;
+                statusData = JSON.parse(localStorage.getItem('empire_status_data')) || {};
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> وضع الحفظ المحلي (خطأ في الاتصال)';
+                statusEl.style.color = "var(--clr-3)";
+                statusEl.style.borderColor = "rgba(255, 49, 49, 0.2)";
+            }
+        }
+
+        async function syncToCloud() {
+            localStorage.setItem('empire_master_data', JSON.stringify(empireData));
+            localStorage.setItem('empire_status_data', JSON.stringify(statusData));
+
+            try {
+                await fetch(CLOUD_API_URL, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-Master-Key': CLOUD_API_KEY 
+                    },
+                    body: JSON.stringify({ empireData, statusData })
+                });
+            } catch (error) {
+                console.error("فشل الرفع للسحابة", error);
             }
         }
 
@@ -197,16 +234,14 @@
             items.forEach((text, index) => {
                 const key = `${currentID}-${text}`;
                 const isDone = statusData[key] ? 'is-done' : '';
-                const isChecked = statusData[key] ? 'checked' : '';
 
                 list.innerHTML += `
                     <div class="item-row ${isDone}" id="row-${index}">
-                        <div class="item-main">
-                            <input type="checkbox" class="item-checkbox" ${isChecked} onchange="toggleItem('${text}')">
+                        <div class="item-main" onclick="toggleItem('${text}')" title="انقر لتغيير حالة الإنجاز">
                             <span class="item-text">${text}</span>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-done" onclick="toggleItem('${text}')" title="تحديد كمنجز"><i class="fas fa-check"></i></button>
+                            <button class="btn-action btn-done" onclick="toggleItem('${text}')" title="تحديد كمنجز"><i class="fas ${isDone ? 'fa-undo' : 'fa-check'}"></i></button>
                             <button class="btn-action btn-delete" onclick="removeItem(${index})" title="حذف نهائي"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
@@ -222,7 +257,7 @@
                 if (!empireData[currentID]) empireData[currentID] = [];
                 empireData[currentID].push(val);
                 input.value = "";
-                sync();
+                syncToCloud();
                 renderMasterList();
             }
         }
@@ -230,7 +265,7 @@
         function toggleItem(text) {
             const key = `${currentID}-${text}`;
             statusData[key] = !statusData[key];
-            sync();
+            syncToCloud();
             renderMasterList();
         }
 
@@ -238,13 +273,8 @@
             const text = empireData[currentID][index];
             delete statusData[`${currentID}-${text}`];
             empireData[currentID].splice(index, 1);
-            sync();
+            syncToCloud();
             renderMasterList();
-        }
-
-        function sync() {
-            localStorage.setItem('empire_master_data', JSON.stringify(empireData));
-            localStorage.setItem('empire_status_data', JSON.stringify(statusData));
         }
 
         document.getElementById('master-input').addEventListener("keypress", (e) => { if(e.key === "Enter") addNewItem(); });

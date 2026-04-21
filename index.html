@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إمبراطورية المتداولين | السحابة المركزية</title>
+    <title>القيادة الميدانية | إمبراطورية المتداولين</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
             --bg-base: #05050A;
             --text-main: #F8F8FF;
             --text-muted: #888899;
-            --glass-bg: rgba(20, 20, 30, 0.65);
+            --glass-bg: rgba(20, 20, 30, 0.7);
             --glass-border: rgba(255, 255, 255, 0.07);
-            --clr-1: #FFD700; --clr-2: #39FF14; --clr-3: #FF3131;
-            --clr-4: #00FFFF; --clr-5: #BD00FF; --clr-6: #FF5E00;
-            --clr-7: #00FF95; --clr-8: #FF007F; --clr-9: #EDEDED;
+            
+            --clr-1: #FFD700; --clr-2: #00FFFF; --clr-3: #BD00FF;
+            --clr-4: #39FF14; --clr-5: #FF5E00; --clr-6: #EDEDED;
+            --clr-7: #FF007F; --clr-8: #1E90FF; --clr-9: #00FA9A;
+            --clr-10: #FF8C00;
+            
             --active-color: #39FF14;
         }
 
@@ -28,98 +32,94 @@
             margin: 0; padding: 20px; min-height: 100vh;
             background-image: radial-gradient(circle at 50% 0%, rgba(40, 40, 70, 0.25), transparent 70%);
             display: flex; flex-direction: column;
-            overflow-x: hidden;
         }
 
         .view { display: none; animation: fadeIn 0.4s ease-out; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* لوحة الأقسام الرئيسية */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; width: 100%; }
-        .nav-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-        .nav-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); background: rgba(30, 30, 45, 0.8); border-color: rgba(255,255,255,0.15); }
-        .card-icon { font-size: 3rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); }
-        .card-title { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 20px auto; width: 100%; flex-wrap: wrap; gap: 15px;}
+        .header-actions { display: flex; gap: 10px; }
+        .btn-export { background: #FF3131; color: white; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+        .btn-export:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255, 49, 49, 0.4); }
+        .btn-reset { background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--glass-border); padding: 12px 20px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 700; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+        .btn-reset:hover { background: rgba(255, 50, 50, 0.2); color: #ff4444; border-color: #ff4444; }
 
-        /* مؤشر السحابة */
-        .sync-status { text-align: center; font-size: 0.95rem; color: var(--clr-2); font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 8px 18px; border-radius: 30px; width: fit-content; margin-left: auto; margin-right: auto; border: 1px solid rgba(57, 255, 20, 0.2); }
+        /* Progress Bar */
+        .progress-wrapper { max-width: 1200px; margin: 0 auto 30px auto; width: 100%; background: var(--glass-bg); padding: 15px 20px; border-radius: 15px; border: 1px solid var(--glass-border); }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: 700; }
+        .progress-track { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--active-color); width: 0%; transition: width 0.5s ease-in-out; box-shadow: 0 0 10px var(--active-color); }
 
-        /* حاوية التفاصيل */
-        .detail-container { max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 92vh; }
-        .btn-back { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; font-weight: 600; margin-bottom: 15px; align-self: flex-start; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .nav-card { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px 15px; text-align: center; cursor: pointer; transition: 0.3s; position: relative; display: flex; flex-direction: column; align-items: center; }
+        .nav-card:hover { transform: translateY(-5px); background: rgba(30, 30, 45, 0.8); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .card-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 5px; }
+        .card-stats { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 20px; }
+
+        .detail-container { max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 90vh; }
+        .btn-back { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-family: 'Cairo'; margin-bottom: 15px; align-self: flex-start; transition: 0.2s; }
         .btn-back:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); }
-        
-        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.7); overflow: hidden; }
-        
-        .detail-header { display: flex; align-items: center; gap: 15px; font-size: 2.2rem; font-weight: 900; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.04); padding-bottom: 15px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
-        /* القائمة الموحدة بتصميم العمودين */
-        .master-list-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-content: start; }
-        .master-list-wrapper::-webkit-scrollbar { width: 5px; }
+        .detail-glass-panel { background: var(--glass-bg); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 30px; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .detail-title-group { display: flex; align-items: center; gap: 15px; font-size: 2.2rem; font-weight: 900; }
+        .detail-stats { font-size: 1.2rem; color: var(--text-muted); }
+
+        .master-list-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; align-content: start; }
+        @media (max-width: 900px) { .master-list-wrapper { grid-template-columns: 1fr; } }
+        .master-list-wrapper::-webkit-scrollbar { width: 6px; }
         .master-list-wrapper::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-        
-        /* تصميم البطاقة الحديث */
-        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(255,255,255,0.02); padding: 15px 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; border-right: 4px solid var(--active-color); height: fit-content; }
-        .item-row:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.08); }
-        
-        .item-row.is-done { opacity: 0.5; filter: grayscale(100%); border-right-color: rgba(255,255,255,0.1); background: transparent; box-shadow: none; }
-        .item-row.is-done .item-text { text-decoration: line-through; color: var(--text-muted); font-weight: 400; }
 
-        .item-main { display: flex; align-items: flex-start; gap: 12px; flex: 1; cursor: pointer; user-select: none; }
-        .item-text { color: #fff; font-size: 1.05rem; line-height: 1.5; font-weight: 600; word-break: break-word; transition: 0.3s; margin-top: 2px; }
+        .item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(255,255,255,0.02); padding: 15px 20px; border-radius: 16px; border: 1px solid var(--glass-border); border-right: 4px solid var(--active-color); transition: 0.3s; }
+        .item-row.is-done { opacity: 0.4; filter: grayscale(100%); border-right-color: #555; }
         
-        .item-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        .btn-action { border: none; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
-        .btn-done { background: rgba(57, 255, 20, 0.1); color: var(--clr-2); }
-        .btn-done:hover { background: var(--clr-2); color: #000; transform: scale(1.05); }
+        .item-main { flex: 1; cursor: text; user-select: text; }
+        .item-text { color: #fff; font-size: 1.1rem; line-height: 1.5; font-weight: 600; display: block; width: 100%; word-break: break-word; }
+        .en-word { font-family: sans-serif; color: #aaa; font-weight: bold; padding: 0 4px; }
+
+        .item-actions { display: flex; align-items: center; gap: 8px; user-select: none; }
+        .btn-action { border: none; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 1.1rem; }
+        .btn-edit { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .btn-done { background: rgba(57, 255, 20, 0.1); color: #39FF14; }
         .btn-delete { background: rgba(255, 50, 50, 0.1); color: #ff4444; }
-        .btn-delete:hover { background: #ff4444; color: #fff; transform: scale(1.05); }
+        .btn-action:hover { transform: scale(1.1); filter: brightness(1.2); }
 
-        /* منطقة الإدخال */
-        .input-footer { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 15px 20px; border-radius: 18px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); align-items: center; }
-        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.1rem; outline: none; width: 100%; }
-        .input-footer input::placeholder { color: rgba(255,255,255,0.4); font-size: 1rem; }
-        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .input-footer { display: flex; gap: 12px; background: rgba(0,0,0,0.4); padding: 18px 20px; border-radius: 18px; border: 1px solid var(--glass-border); }
+        .input-footer input { flex: 1; background: transparent; border: none; color: #fff; font-family: 'Cairo'; font-size: 1.15rem; outline: none; }
+        .input-footer button { background: var(--active-color); color: #000; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 900; font-family: 'Cairo'; cursor: pointer; transition: 0.2s; font-size: 1.1rem; }
         .input-footer button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-        /* ========================================= */
-        /* التجاوب مع شاشات الموبايل (Responsive CSS) */
-        /* ========================================= */
-        @media (max-width: 900px) {
-            .master-list-wrapper { grid-template-columns: 1fr; }
-        }
-
+        
         @media (max-width: 600px) {
-            body { padding: 10px; }
-            .cards-grid { grid-template-columns: 1fr; gap: 15px; margin: 10px auto; }
-            .nav-card { padding: 20px; border-radius: 16px; }
-            .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
-            .card-title { font-size: 1.2rem; }
-            
-            .detail-container { height: 95vh; }
-            .detail-glass-panel { padding: 15px; border-radius: 18px; }
-            .detail-header { font-size: 1.6rem; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; }
-            
-            .item-row { padding: 12px 15px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .item-row { flex-direction: column; align-items: flex-start; }
             .item-actions { width: 100%; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
-            .item-text { font-size: 1rem; }
-            .btn-action { width: 35px; height: 35px; font-size: 1rem; }
-
-            .input-footer { padding: 10px 12px; border-radius: 14px; gap: 8px; }
-            .input-footer input { font-size: 1rem; }
-            /* إخفاء كلمة "إضافة" في الموبايل والاكتفاء بالأيقونة لتوفير مساحة للكتابة */
-            .input-footer button span { display: none; }
-            .input-footer button { padding: 12px 20px; border-radius: 10px; }
-            
-            .sync-status { font-size: 0.8rem; padding: 6px 15px; }
+            .detail-header { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <div id="dashboard-view" class="view active">
-        <div class="sync-status" id="sync-status"><i class="fas fa-spinner fa-spin"></i> جاري الاتصال بالسحابة...</div>
+        <div class="dashboard-header">
+            <h1 style="margin:0; font-weight:900;">القيادة الميدانية - معسكر تايلند</h1>
+            <div class="header-actions">
+                <button class="btn-reset" onclick="resetDashboard()"><i class="fas fa-sync-alt"></i> تصفير البيانات</button>
+                <button class="btn-export" id="export-btn" onclick="exportToPDF()"><i class="fas fa-file-pdf"></i> تصدير التقرير</button>
+            </div>
+        </div>
+        
+        <div class="progress-wrapper">
+            <div class="progress-header">
+                <span>الجاهزية الكلية للمعسكر</span>
+                <span id="overall-percent">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="overall-bar"></div>
+            </div>
+        </div>
+
         <div class="cards-grid" id="sections-grid"></div>
     </div>
 
@@ -128,120 +128,128 @@
             <button class="btn-back" onclick="exitSection()"><i class="fas fa-arrow-right"></i> العودة للوحة القيادة</button>
             <div class="detail-glass-panel">
                 <div class="detail-header" id="header-el">
-                    <i id="header-icon"></i> <span id="header-title"></span>
+                    <div class="detail-title-group">
+                        <i id="header-icon"></i> <span id="header-title"></span>
+                    </div>
+                    <div class="detail-stats" id="section-stats">0/0 منجزة</div>
                 </div>
                 <div class="master-list-wrapper" id="master-list"></div>
                 <div class="input-footer">
-                    <input type="text" id="master-input" placeholder="أضف مهمة أو توجيه جديد هنا...">
-                    <button id="btn-add-main" onclick="addNewItem()"><i class="fas fa-paper-plane"></i> <span>إرسال</span></button>
+                    <input type="text" id="master-input" placeholder="أضف مهمة أو توجيه جديد هنا..." onkeypress="if(event.key === 'Enter') addNewItem()">
+                    <button onclick="addNewItem()"><i class="fas fa-plus"></i> إضافة</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const CLOUD_API_URL = "https://api.jsonbin.io/v3/b/69e3ff94856a6821894b1a89";
-        const CLOUD_API_KEY = "$2a$10$qg/zEcP90Y1YYOfOjaEGk.0jAq2BXhCgPTGSxHoJGRjMEbYo.fiBq";
+        // دالة استراتيجية للتعرف على الكلمات الإنجليزية وتغليفها برمجياً
+        const formatText = (text) => {
+            // إزالة أي تغليف سابق لمنع التداخل
+            let cleanText = text.replace(/<[^>]*>?/gm, '');
+            // تغليف الكلمات الإنجليزية والأرقام
+            return cleanText.replace(/([a-zA-Z0-9&]+)/g, '<span dir="ltr" class="en-word" style="display:inline-block;">$1</span>');
+        };
 
-        const initialSetup = {
-            1: ["فحص بوابات الدفع وتأكيد استلام المبالغ.", "تفعيل حسابات الوكالة (IB) وربطها بالعملاء.", "عزل المشترين فوراً في الجروب المغلق.", "متابعة من سحبوا السلة (Cart Abandonment)."],
-            2: ["إدارة جلسات التداول الحي في الجروب المغلق.", "المراقبة الصارمة للـ Drawdown واستبعاد المخالفين.", "إصدار لوحة الصدارة (Leaderboard) أسبوعياً.", "تحديد الفائزين النهائيين المؤهلين للسفر."],
-            3: ["تصوير لقطات الهوك الحقيقية في السيت أب.", "مونتاج الريلز بـ After Effects والـ Zoom In/Out.", "توثيق المعسكر (فندق، قطار، تخييم) بجودة سينمائية.", "إنتاج الفلوقات اليومية للتسويق الفيروسي."],
-            4: ["حجز تذاكر الطيران وتأشيرات الدخول.", "حجز مقصورات قطار النوم للتوثيق الميداني.", "توفير حلول إنترنت 5G وبنوك طاقة للتخييم."],
-            5: ["كتابة سكربتات محتوى جذابة (FOMO وتعليمي).", "التواصل مع شركات التمويل لرعايات (B2B).", "نشر الريلز مع الوصف والهاشتاكات المستهدفة."],
-            6: ["تخطيط الجولات السياحية في تايلند.", "تنسيق فعاليات ليلية لكسر ضغط التداول."],
-            7: ["تصميم وطباعة تيشرتات الإمبراطورية.", "تجهيز حقائب ترحيبية (Welcome Kits)."],
-            8: ["الرد على استفسارات المشترين 24/7.", "الدعم التقني لفتح حسابات الوكالة."],
-            9: ["إدارة التحركات اليومية للفريق في تايلند.", "وضع خطة طوارئ (Plan B) لانقطاع الإنترنت."]
+        const initialTasks = {
+            1: ["مراجعة بوابات الدفع وتأكيد استلام المبالغ لجميع المشتركين.", "تفعيل حسابات الوكالة IB وربطها بالعملاء لضمان العمولات.", "إدارة ميزانية المعسكر وتخصيص النفقات للأنشطة واللوجستيات.", "متابعة العملاء المنسحبين Cart Abandonment لزيادة المبيعات.", "إعداد خطط وعروض Upsell للخدمات المتقدمة بعد المعسكر."],
+            2: ["تأكيد حجوزات تذاكر الطيران وتأشيرات الدخول لجميع المشاركين.", "تأمين حجوزات الفنادق الفاخرة ومقاطع قطار النوم للرحلات الداخلية.", "التعاقد مع شركات النقل لتوفير حافلات VIP مريحة طوال فترة المعسكر.", "توفير حلول إنترنت 5G محمولة وبنوك طاقة لضمان اتصال دائم.", "إعداد خطط طوارئ Plan B للتعامل مع أي تأخير في الجداول الزمنية."],
+            3: ["التواصل مع شركات التمويل المالي Prop Firms لعقد شراكات ورعايات.", "صياغة ونشر محتوى FOMO يومي لزيادة ترقب الجمهور.", "إدارة الحملات الإعلانية الممولة الموجهة للجمهور المستهدف.", "توثيق شهادات المشتركين Testimonials لاستخدامها كدليل اجتماعي.", "إدارة الهوية البصرية للمعسكر عبر جميع المنصات التسويقية."],
+            4: ["تجهيز بيئة التداول المباشر Setup وتأمين الشاشات والإنترنت.", "إدارة جلسات التداول الحي في الجروب المغلق أثناء التواجد في تايلند.", "المراقبة الصارمة وتطبيق قواعد إدارة المخاطر Drawdown.", "إصدار وتحديث لوحة الصدارة Leaderboard بشكل يومي.", "تقديم جلسات سيكولوجية ليلية لتخفيف ضغط التداول عن المشاركين."],
+            5: ["تخطيط وتنفيذ جولات سياحية لأهم المعالم في تايلند بجدول زمني دقيق.", "تنظيم أنشطة ومغامرات متنوعة Zipline وغيرها لكسر روتين التداول.", "اختيار وحجز مطاعم تقدم تجارب طعام استثنائية للمشتركين.", "تنسيق فعاليات ليلية وجلسات تعارف لتعزيز الروابط بين المتداولين.", "تجهيز هدايا يومية صغيرة ومفاجآت للمشتركين لرفع الروح المعنوية."],
+            6: ["الإشراف المباشر على التحركات اليومية لضمان الالتزام بالجدول الزمني.", "حل أي مشاكل فورية تواجه المشتركين صحية أو تقنية أو لوجستية.", "التنسيق بين فريق العمل والتصوير والمتطوعين على أرض الواقع.", "إدارة التواصل مع المرشدين السياحيين والجهات المحلية في تايلند.", "التأكد من توفر جميع معدات الإسعافات الأولية والسلامة."],
+            7: ["توزيع المهام اليومية على المتطوعين ومتابعة تنفيذها بدقة.", "الرد على استفسارات المشتركين وتلبية احتياجاتهم على مدار الساعة.", "مساعدة فريق الإنتاج والتصوير في نقل وتجهيز المعدات.", "تنظيم حركة المشتركين في المطارات والفنادق ومواقع الأنشطة.", "تقديم الدعم التقني الأولي في حال وجود مشاكل في منصات التداول."],
+            8: ["توثيق كامل لفعاليات المعسكر بجودة سينمائية عالية.", "التركيز على التقاط لحظات الانتصار والمشاعر الحقيقية Reactions.", "تصوير لقطات سريعة يومياً لتجهيز محتوى ريلز للإنستغرام والتيك توك.", "إجراء مقابلات سريعة مع المشاركين لجمع الانطباعات اليومية.", "تفريغ وتأمين الذاكرات Backup يومياً لضمان عدم ضياع الملفات."],
+            9: ["تصميم وطباعة تيشرتات وقبعات بهوية الإمبراطورية وتوزيعها.", "تجهيز حقائب ترحيبية Welcome Kits تحتوي على بروشورات وجدول.", "طباعة بنرات وأعلام الإمبراطورية لاستخدامها في الصور الجماعية.", "تجهيز بطاقات تعريفية ID Badges لجميع المشاركين وفريق العمل.", "طباعة الشهادات الختامية ودروع التكريم للفائزين."],
+            10: ["تنظيم الحفل الختامي وتوزيع الجوائز والشهادات على المشاركين.", "تصفية الحسابات المالية مع الفنادق وشركات النقل محلياً.", "تجميع كافة ملفات التصوير لتسليمها لفريق المونتاج النهائي.", "التأكد من مغادرة جميع المشاركين بسلامة ووصولهم إلى المطار.", "جمع التقييمات والملاحظات Feedback لتطوير المعسكرات القادمة."]
         };
 
         const config = {
             1: { title: "المالية والمبيعات", icon: "fa-wallet", color: "var(--clr-1)" },
-            2: { title: "البرنامج التدريبي", icon: "fa-graduation-cap", color: "var(--clr-2)" },
-            3: { title: "التصوير والإنتاج", icon: "fa-video", color: "var(--clr-3)" },
-            4: { title: "العمليات والحجوزات", icon: "fa-map-marked-alt", color: "var(--clr-4)" },
-            5: { title: "التسويق والرعايات", icon: "fa-ad", color: "var(--clr-5)" },
-            6: { title: "البرنامج الترفيهي", icon: "fa-umbrella-beach", color: "var(--clr-6)" },
-            7: { title: "المطبوعات والهوية", icon: "fa-print", color: "var(--clr-7)" },
-            8: { title: "المتطوعون", icon: "fa-user-friends", color: "var(--clr-8)" },
-            9: { title: "المنسق الميداني", icon: "fa-user-shield", color: "var(--clr-9)" }
+            2: { title: "العمليات والحجوزات", icon: "fa-plane", color: "var(--clr-2)" },
+            3: { title: "التسويق والرعايات", icon: "fa-ad", color: "var(--clr-3)" },
+            4: { title: "البرنامج التدريبي", icon: "fa-graduation-cap", color: "var(--clr-4)" },
+            5: { title: "البرنامج الترفيهي", icon: "fa-umbrella-beach", color: "var(--clr-5)" },
+            6: { title: "المنسق الميداني", icon: "fa-user-shield", color: "var(--clr-6)" },
+            7: { title: "المتطوعون", icon: "fa-user-friends", color: "var(--clr-7)" },
+            8: { title: "التصوير", icon: "fa-video", color: "var(--clr-8)" },
+            9: { title: "المطبوعات", icon: "fa-print", color: "var(--clr-9)" },
+            10: { title: "ختام البرنامج", icon: "fa-flag-checkered", color: "var(--clr-10)" }
         };
 
         let currentID = null;
-        let empireData = {};
-        let statusData = {};
+        let empireData = JSON.parse(localStorage.getItem('empire_local_v6'));
+        let statusData = JSON.parse(localStorage.getItem('empire_status_v6')) || {};
 
-        async function init() {
+        if (!empireData) {
+            empireData = JSON.parse(JSON.stringify(initialTasks));
+            save();
+        }
+
+        function init() {
+            renderDashboard();
+        }
+
+        function renderDashboard() {
             const grid = document.getElementById('sections-grid');
+            grid.innerHTML = '';
+            
+            let totalTasks = 0;
+            let totalDone = 0;
+
             for (let id in config) {
                 const s = config[id];
+                const tasks = empireData[id] || [];
+                const sectionTotal = tasks.length;
+                let sectionDone = 0;
+                
+                tasks.forEach((_, index) => {
+                    if (statusData[`${id}-${index}`]) sectionDone++;
+                });
+
+                totalTasks += sectionTotal;
+                totalDone += sectionDone;
+
                 const card = document.createElement('div');
                 card.className = 'nav-card';
                 card.style.borderTop = `6px solid ${s.color}`;
-                card.innerHTML = `<div class="card-icon" style="color: ${s.color};"><i class="fas ${s.icon}"></i></div><div class="card-title">${s.title}</div>`;
+                card.innerHTML = `
+                    <div class="card-icon" style="color: ${s.color};"><i class="fas ${s.icon}"></i></div>
+                    <div class="card-title">${s.title}</div>
+                    <div class="card-stats">${sectionDone} / ${sectionTotal} منجزة</div>
+                `;
                 card.onclick = () => enterSection(id);
                 grid.appendChild(card);
             }
-            await loadFromCloud();
-        }
 
-        async function loadFromCloud() {
-            const statusEl = document.getElementById('sync-status');
-            try {
-                let response = await fetch(CLOUD_API_URL, { headers: { 'X-Master-Key': CLOUD_API_KEY } });
-                let data = await response.json();
-                
-                if (data.record && data.record.empireData) {
-                    empireData = data.record.empireData;
-                    statusData = data.record.statusData || {};
-                    statusEl.innerHTML = '<i class="fas fa-check-circle"></i> متصل بالسحابة (مزامنة فورية)';
-                    statusEl.style.color = "var(--clr-2)";
-                    statusEl.style.borderColor = "rgba(57, 255, 20, 0.3)";
-                } else {
-                    empireData = initialSetup;
-                    statusEl.innerHTML = '<i class="fas fa-cloud"></i> تم تهيئة السحابة بنجاح';
-                }
-            } catch (error) {
-                empireData = JSON.parse(localStorage.getItem('empire_master_data')) || initialSetup;
-                statusData = JSON.parse(localStorage.getItem('empire_status_data')) || {};
-                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> الحفظ المحلي (لا يوجد إنترنت)';
-                statusEl.style.color = "var(--clr-3)";
-                statusEl.style.borderColor = "rgba(255, 49, 49, 0.3)";
-            }
-        }
-
-        async function syncToCloud() {
-            localStorage.setItem('empire_master_data', JSON.stringify(empireData));
-            localStorage.setItem('empire_status_data', JSON.stringify(statusData));
-
-            try {
-                await fetch(CLOUD_API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': CLOUD_API_KEY },
-                    body: JSON.stringify({ empireData, statusData })
-                });
-            } catch (error) { console.error("فشل الرفع للسحابة", error); }
+            // تحديث مؤشر الإنجاز الكلي
+            const percent = totalTasks === 0 ? 0 : Math.round((totalDone / totalTasks) * 100);
+            document.getElementById('overall-bar').style.width = `${percent}%`;
+            document.getElementById('overall-percent').innerText = `${percent}%`;
+            
+            // تغيير لون الشريط حسب نسبة الإنجاز
+            let barColor = 'var(--active-color)';
+            if(percent < 40) barColor = '#FF3131';
+            else if(percent < 80) barColor = '#FFD700';
+            document.getElementById('overall-bar').style.background = barColor;
+            document.getElementById('overall-bar').style.boxShadow = `0 0 10px ${barColor}`;
         }
 
         function enterSection(id) {
             currentID = id;
             document.getElementById('dashboard-view').classList.remove('active');
             document.getElementById('detail-view').classList.add('active');
-            
             const s = config[id];
             document.documentElement.style.setProperty('--active-color', s.color);
-            
             document.getElementById('header-icon').className = `fas ${s.icon}`;
             document.getElementById('header-title').innerText = s.title;
             document.getElementById('header-el').style.color = s.color;
-            document.getElementById('btn-add-main').style.backgroundColor = s.color;
-            document.getElementById('btn-add-main').style.color = "#000";
-            
             renderMasterList();
         }
 
         function exitSection() {
             currentID = null;
+            renderDashboard();
             document.getElementById('detail-view').classList.remove('active');
             document.getElementById('dashboard-view').classList.add('active');
         }
@@ -250,24 +258,30 @@
             const list = document.getElementById('master-list');
             list.innerHTML = "";
             const items = empireData[currentID] || [];
+            let sectionDone = 0;
 
-            items.forEach((text, index) => {
-                const key = `${currentID}-${text}`;
+            items.forEach((rawText, index) => {
+                const key = `${currentID}-${index}`;
                 const isDone = statusData[key] ? 'is-done' : '';
+                if(statusData[key]) sectionDone++;
+                
+                const formattedText = formatText(rawText);
 
                 list.innerHTML += `
-                    <div class="item-row ${isDone}" id="row-${index}">
-                        <div class="item-main" onclick="toggleItem('${text}')" title="انقر لتغيير حالة الإنجاز">
-                            <span class="item-text">${text}</span>
+                    <div class="item-row ${isDone}">
+                        <div class="item-main">
+                            <span class="item-text">${formattedText}</span>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-action btn-done" onclick="toggleItem('${text}')" title="تحديد كمنجز"><i class="fas ${isDone ? 'fa-undo' : 'fa-check'}"></i></button>
-                            <button class="btn-action btn-delete" onclick="removeItem(${index})" title="حذف نهائي"><i class="fas fa-trash-alt"></i></button>
+                            <button class="btn-action btn-edit" onclick="editItem(${index})" title="تعديل"><i class="fas fa-edit"></i></button>
+                            <button class="btn-action btn-done" onclick="toggleItem(${index})" title="إنجاز/تراجع"><i class="fas ${isDone ? 'fa-undo' : 'fa-check'}"></i></button>
+                            <button class="btn-action btn-delete" onclick="removeItem(${index})" title="حذف"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>
                 `;
             });
-            list.scrollTop = list.scrollHeight;
+            
+            document.getElementById('section-stats').innerText = `${sectionDone} / ${items.length} منجزة`;
         }
 
         function addNewItem() {
@@ -277,27 +291,146 @@
                 if (!empireData[currentID]) empireData[currentID] = [];
                 empireData[currentID].push(val);
                 input.value = "";
-                syncToCloud();
+                save();
                 renderMasterList();
             }
         }
 
-        function toggleItem(text) {
-            const key = `${currentID}-${text}`;
+        function editItem(index) {
+            let cleanText = empireData[currentID][index].replace(/<[^>]*>?/gm, '');
+            const newText = prompt("تعديل التوجيه أو المهمة:", cleanText);
+            if (newText !== null && newText.trim() !== "") {
+                empireData[currentID][index] = newText.trim();
+                save();
+                renderMasterList();
+            }
+        }
+
+        function toggleItem(index) {
+            const key = `${currentID}-${index}`;
             statusData[key] = !statusData[key];
-            syncToCloud();
+            save();
             renderMasterList();
         }
 
         function removeItem(index) {
-            const text = empireData[currentID][index];
-            delete statusData[`${currentID}-${text}`];
-            empireData[currentID].splice(index, 1);
-            syncToCloud();
-            renderMasterList();
+            if(confirm("يا قائدي، هل أنت متأكد من حذف هذا التوجيه؟")) {
+                const key = `${currentID}-${index}`;
+                delete statusData[key];
+                empireData[currentID].splice(index, 1);
+                
+                // إعادة ترتيب الـ statusData للعناصر المتبقية لتجنب ترحيل الصح للخطأ
+                let newStatusData = {};
+                for (let i = 0; i < empireData[currentID].length; i++) {
+                    let oldKey = i >= index ? `${currentID}-${i+1}` : `${currentID}-${i}`;
+                    if(statusData[oldKey]) newStatusData[`${currentID}-${i}`] = true;
+                }
+                
+                // دمج الحالات الجديدة مع باقي الأقسام
+                for(let k in statusData) {
+                    if(!k.startsWith(`${currentID}-`)) newStatusData[k] = statusData[k];
+                }
+                
+                statusData = newStatusData;
+                save();
+                renderMasterList();
+            }
         }
 
-        document.getElementById('master-input').addEventListener("keypress", (e) => { if(e.key === "Enter") addNewItem(); });
+        function resetDashboard() {
+            if(confirm("تنبيه أمني يا قائدي: هل أنت متأكد من رغبتك في مسح كافة الإنجازات والعودة لنقطة الصفر؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                empireData = JSON.parse(JSON.stringify(initialTasks));
+                statusData = {};
+                save();
+                renderDashboard();
+            }
+        }
+
+        function save() {
+            localStorage.setItem('empire_local_v6', JSON.stringify(empireData));
+            localStorage.setItem('empire_status_v6', JSON.stringify(statusData));
+        }
+
+        function exportToPDF() {
+            let hasData = false;
+            
+            let printContent = `
+                <div style="padding: 50px 40px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right; background: #ffffff; color: #222;">
+                    <div style="text-align: center; margin-bottom: 50px; padding-bottom: 25px; border-bottom: 3px solid #eee;">
+                        <h1 style="color: #111; font-weight: 900; margin: 0 0 10px 0; font-size: 32px; letter-spacing: -1px;">تقرير العمليات الميدانية</h1>
+                        <h3 style="color: #777; margin: 0; font-size: 18px; font-weight: 600;">معسكر إمبراطورية المتداولين - تايلند</h3>
+                        <p style="margin-top: 15px; font-weight: bold; color: #444;">معدل الجاهزية الكلي: ${document.getElementById('overall-percent').innerText}</p>
+                    </div>
+            `;
+            
+            for (let id in config) {
+                const tasks = empireData[id] || [];
+                if (tasks.length > 0) {
+                    hasData = true;
+                    printContent += `
+                        <div style="margin-bottom: 35px; page-break-inside: avoid;">
+                            <h2 style="color: #111; margin-top: 0; font-size: 22px; padding-right: 15px; border-right: 5px solid ${config[id].color}; margin-bottom: 20px;">
+                                ${config[id].title}
+                            </h2>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tbody>
+                    `;
+                    
+                    tasks.forEach((t, index) => {
+                        const isDone = statusData[`${id}-${index}`];
+                        const statusBadge = isDone 
+                            ? '<div style="background: #e8f5e9; color: #2e7d32; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 700; text-align: center; border: 1px solid #c8e6c9; width: 85px;">✔ مُنجز</div>' 
+                            : '<div style="background: #f5f5f5; color: #757575; padding: 6px 0; border-radius: 6px; font-size: 13px; font-weight: 700; text-align: center; border: 1px solid #e0e0e0; width: 85px;">⏳ معلق</div>';
+                        
+                        // تغليف الكلمات الانجليزية حتى في التقرير
+                        const cleanT = formatText(t);
+                        const taskText = isDone ? `<del style="color: #999; text-decoration-thickness: 1.5px;">${cleanT}</del>` : `<span style="color: #333; font-weight: 600;">${cleanT}</span>`;
+                        
+                        printContent += `
+                                    <tr>
+                                        <td style="padding: 14px 0 14px 15px; border-bottom: 1px solid #f0f0f0; width: 15%; vertical-align: top;">
+                                            ${statusBadge}
+                                        </td>
+                                        <td style="padding: 14px 0; border-bottom: 1px solid #f0f0f0; width: 85%; vertical-align: top; font-size: 16px; line-height: 1.6;">
+                                            ${taskText}
+                                        </td>
+                                    </tr>
+                        `;
+                    });
+                    
+                    printContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+            }
+            
+            printContent += `</div>`;
+
+            if (!hasData) {
+                alert("لوحة القيادة فارغة يا قائدي! لا توجد مهام لتصديرها.");
+                return;
+            }
+
+            const btn = document.getElementById('export-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري استخراج التقرير...';
+            btn.disabled = true;
+
+            const opt = {
+                margin:       [10, 0, 10, 0],
+                filename:     'Empire_Operations_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(printContent).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
 
         window.onload = init;
     </script>
